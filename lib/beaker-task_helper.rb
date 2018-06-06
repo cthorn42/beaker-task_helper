@@ -18,7 +18,7 @@ module Beaker::TaskHelper # rubocop:disable Style/ClassAndModuleChildren
                        'root'
                      end
 
-  BOLT_VERSION = '0.16.1'.freeze
+  BOLT_VERSION = '0.20.5'.freeze
 
   def install_bolt_on(hosts, version = BOLT_VERSION, source = nil)
     unless default[:docker_image_commands].nil?
@@ -60,6 +60,7 @@ INSTALL_BOLT_PP
 
     on task_runner, "ssh-keygen -f #{ssh_dir_path}/id_rsa -t rsa -N ''"
     public_key = on(task_runner, "cat #{rsa_pub_path}").stdout
+    on(master, "chmod 700 #{ssh_dir_path}/id_rsa")
     create_remote_file(nodes, "#{rsa_pub_path}", public_key)
     on(nodes, "cat #{rsa_pub_path} >> #{ssh_dir_path}/authorized_keys")
   end
